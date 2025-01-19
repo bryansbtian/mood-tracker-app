@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "https://mood-tracker-app-client.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
