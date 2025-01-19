@@ -45,7 +45,8 @@ const MoodLoggingCard = () => {
           alert("Mood logged successfully!");
         } else {
           const errorData = await response.json();
-          alert(`Failed to log mood: ${errorData.message || errorData.error}`);
+          console.error("Error details:", errorData);
+          alert(`Failed to log mood: ${errorData.error}`);
         }
       } catch (error) {
         console.error("Error logging mood:", error);

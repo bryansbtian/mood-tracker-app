@@ -118,15 +118,24 @@ app.post("/login", async (req, res) => {
 
 app.post("/moods", authenticateToken, async (req, res) => {
   const { date, mood, note } = req.body;
+  console.log("Received payload:", { date, mood, note });
+  if (!date || !mood) {
+    console.error("Missing required fields:", { date, mood });
+    return res.status(400).json({ error: "Date and mood are required." });
+  }
+
   try {
     const normalizedDate = new Date(date);
     normalizedDate.setUTCHours(0, 0, 0, 0);
+    console.log("Normalized date:", normalizedDate);
 
     const updatedMood = await Mood.findOneAndUpdate(
       { userId: req.user.userId, date: normalizedDate },
       { mood, note, date: normalizedDate, userId: req.user.userId },
       { upsert: true, new: true }
     );
+
+    console.log("Database update result:", updatedMood);
 
     if (!updatedMood) {
       return res
