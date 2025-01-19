@@ -128,28 +128,12 @@ app.post("/moods", authenticateToken, async (req, res) => {
   try {
     const normalizedDate = new Date(date);
     normalizedDate.setUTCHours(0, 0, 0, 0);
-    console.log("Normalized date:", normalizedDate);
 
     const updatedMood = await Mood.findOneAndUpdate(
-      {
-        userId: req.user.userId,
-        date: normalizedDate,
-      },
-      {
-        $set: {
-          mood,
-          note,
-          date: normalizedDate,
-          userId: req.user.userId,
-        },
-      },
-      {
-        upsert: true,
-        new: true,
-      }
+      { userId: req.user.userId, date: normalizedDate },
+      { mood, note, date: normalizedDate, userId: req.user.userId },
+      { upsert: true, new: true }
     );
-
-    console.log("Database update result:", updatedMood);
 
     res
       .status(200)
