@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./MoodDataCard.css";
 import { motion } from "framer-motion";
+import { API_BASE_URL } from "../config";
 
 const MoodDataCard = () => {
   const currentYear = new Date().getFullYear();
@@ -46,18 +47,15 @@ const MoodDataCard = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/moods/month?year=${currentYear}&month=${currentMonth}`,
+        `${API_BASE_URL}/moods/month?year=${currentYear}&month=${currentMonth}`,
         {
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Fetched month moods:", data);
         setMonthMoods(data);
       } else {
         console.error(`Failed to fetch moods: ${response.statusText}`);
@@ -103,19 +101,9 @@ const MoodDataCard = () => {
   };
 
   const handleSave = async () => {
-    if (!editedMood || !editedNote.trim()) {
-      alert("Please select a mood and enter a note.");
-      return;
-    }
-
+    const token = localStorage.getItem("token");
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("You must be logged in to update a mood.");
-        return;
-      }
-
-      const response = await fetch(`http://localhost:5000/moods`, {
+      const response = await fetch(`${API_BASE_URL}/moods`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -127,21 +115,8 @@ const MoodDataCard = () => {
           note: editedNote,
         }),
       });
-
-      if (response.ok) {
-        const updatedMood = await response.json();
-        alert("Mood updated successfully!");
-
-        fetchMonthMoods();
-        setMoodData({ mood: editedMood, note: editedNote });
-        setIsEditing(false);
-      } else {
-        const errorData = await response.json();
-        alert(`Failed to update mood: ${errorData.message || errorData.error}`);
-      }
     } catch (error) {
       console.error("Error updating mood:", error);
-      alert("An error occurred while updating mood.");
     }
   };
 

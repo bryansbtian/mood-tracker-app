@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./LoginRegisterPage.css";
+import { API_BASE_URL } from "../config";
 
 const LoginRegisterPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -31,63 +32,33 @@ const LoginRegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (isLogin) {
-      try {
-        const response = await fetch("http://localhost:5000/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        });
+    const endpoint = isLogin ? "/login" : "/register";
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
-        if (response.ok) {
-          const data = await response.json();
-          alert("Login successful!");
-          console.log("Login Response:", data);
+      if (response.ok) {
+        const data = await response.json();
+        alert(isLogin ? "Login successful!" : "Registration successful!");
+        if (isLogin) {
           localStorage.setItem("token", data.token);
           setIsLoggedIn(true);
-        } else {
-          const errorData = await response.json();
-          alert(`Login failed: ${errorData.error}`);
         }
-      } catch (error) {
-        console.error("Error logging in:", error);
-        alert("An error occurred while logging in.");
+      } else {
+        const errorData = await response.json();
+        alert(
+          `${isLogin ? "Login" : "Registration"} failed: ${errorData.error}`
+        );
       }
-    } else {
-      if (formData.password !== formData.confirmPassword) {
-        alert("Passwords do not match!");
-        return;
-      }
-
-      try {
-        const response = await fetch("http://localhost:5000/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          alert("Registration successful!");
-          console.log("Registration Response:", data);
-        } else {
-          const errorData = await response.json();
-          alert(`Registration failed: ${errorData.error}`);
-        }
-      } catch (error) {
-        console.error("Error registering:", error);
-        alert("An error occurred while registering.");
-      }
+    } catch (error) {
+      console.error("Error during login/registration:", error);
+      alert("An error occurred. Please try again.");
     }
 
     setIsModalOpen(false);
