@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const MONGO_URI = "mongodb+srv://bryanseb:1234@cluster0.k7evi.mongodb.net/";
+const MONGO_URI = process.env.MONGO_URI;
 const JWT_SECRET = "secret";
 
 mongoose
@@ -256,10 +256,5 @@ app.delete("/moods", authenticateToken, async (req, res) => {
     res.status(500).json({ error: "Error deleting mood." });
   }
 });
-
-// const PORT = 5000;
-// app.listen(PORT, () =>
-//   console.log(`Server running on http://localhost:${PORT}`)
-// );
 
 module.exports = app;
