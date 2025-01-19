@@ -75,19 +75,16 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   console.log("Login request received:", req.body);
+
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    console.log("User found:", user);
-
     if (!user) {
-      console.error("User not found for email:", email);
+      console.error("User not found:", email);
       return res.status(404).json({ error: "User not found." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Password match:", isMatch);
-
     if (!isMatch) {
       console.error("Invalid credentials for email:", email);
       return res.status(400).json({ error: "Invalid credentials." });
@@ -96,12 +93,11 @@ app.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
-    console.log("Generated token:", token);
-
+    console.log("Login successful:", token);
     res.status(200).json({ token, userId: user._id });
   } catch (error) {
     console.error("Error during login:", error);
-    res.status(500).json({ error: "Error logging in." });
+    res.status(500).json({ error: "Internal server error." });
   }
 });
 
