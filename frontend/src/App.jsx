@@ -6,7 +6,7 @@ import MoodLoggingCard from "./components/MoodLoggingCard";
 import MoodPredictionCard from "./components/MoodPredictionCard";
 import MoodDataCard from "./components/MoodDataCard";
 import MoodSummaryCard from "./components/MoodSummaryCard";
-import { API_BASE_URL } from "../config";
+import { API_BASE_URL } from "./config";
 
 const App = () => {
   const [weeklyData, setWeeklyData] = useState({});

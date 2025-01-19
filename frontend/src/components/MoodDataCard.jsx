@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./MoodDataCard.css";
 import { motion } from "framer-motion";
-import { API_BASE_URL } from ".../config";
+import { API_BASE_URL } from "../config";
 
 const MoodDataCard = () => {
   const currentYear = new Date().getFullYear();
