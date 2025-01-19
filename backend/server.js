@@ -131,19 +131,25 @@ app.post("/moods", authenticateToken, async (req, res) => {
     console.log("Normalized date:", normalizedDate);
 
     const updatedMood = await Mood.findOneAndUpdate(
-      { userId: req.user.userId, date: normalizedDate },
-      { mood, note, date: normalizedDate, userId: req.user.userId },
-      { upsert: true, new: true }
+      {
+        userId: req.user.userId,
+        date: normalizedDate,
+      },
+      {
+        $set: {
+          mood,
+          note,
+          date: normalizedDate,
+          userId: req.user.userId,
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+      }
     );
 
     console.log("Database update result:", updatedMood);
-
-    if (!updatedMood) {
-      console.error("Mood update failed: Mood not found.");
-      return res
-        .status(404)
-        .json({ error: "Mood not found for the specified date." });
-    }
 
     res
       .status(200)
