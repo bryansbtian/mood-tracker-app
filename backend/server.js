@@ -9,7 +9,13 @@ const Mood = require("./models/Mood");
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://mood-tracker-app-client.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 const MONGO_URI = process.env.MONGO_URI;
 const JWT_SECRET = "secret";
