@@ -119,6 +119,7 @@ app.post("/login", async (req, res) => {
 app.post("/moods", authenticateToken, async (req, res) => {
   const { date, mood, note } = req.body;
   console.log("Received payload:", { date, mood, note });
+
   if (!date || !mood) {
     console.error("Missing required fields:", { date, mood });
     return res.status(400).json({ error: "Date and mood are required." });
@@ -138,6 +139,7 @@ app.post("/moods", authenticateToken, async (req, res) => {
     console.log("Database update result:", updatedMood);
 
     if (!updatedMood) {
+      console.error("Mood update failed: Mood not found.");
       return res
         .status(404)
         .json({ error: "Mood not found for the specified date." });
@@ -148,7 +150,9 @@ app.post("/moods", authenticateToken, async (req, res) => {
       .json({ message: "Mood updated successfully!", mood: updatedMood });
   } catch (error) {
     console.error("Error updating mood:", error);
-    res.status(500).json({ error: "Error updating mood." });
+    res
+      .status(500)
+      .json({ error: "Error updating mood.", details: error.message });
   }
 });
 
