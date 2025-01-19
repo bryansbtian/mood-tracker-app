@@ -8,7 +8,6 @@ import {
 import { FaTired } from "react-icons/fa";
 import "./MoodLoggingCard.css";
 import { motion } from "framer-motion";
-import { API_BASE_URL } from "../config";
 
 const MoodLoggingCard = () => {
   const [selectedMood, setSelectedMood] = useState(null);
@@ -20,21 +19,39 @@ const MoodLoggingCard = () => {
 
   const handleConfirm = async () => {
     const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(`${API_BASE_URL}/moods`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          date: new Date().toISOString(),
-          mood: selectedMood,
-          note,
-        }),
-      });
-    } catch (error) {
-      console.error("Error logging mood:", error);
+
+    if (!token) {
+      alert("You must be logged in to log your mood.");
+      return;
+    }
+
+    if (selectedMood) {
+      try {
+        const response = await fetch("http://localhost:5000/moods", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            date: new Date().toISOString(),
+            mood: selectedMood,
+            note,
+          }),
+        });
+
+        if (response.ok) {
+          alert("Mood logged successfully!");
+        } else {
+          const errorData = await response.json();
+          alert(`Failed to log mood: ${errorData.message || errorData.error}`);
+        }
+      } catch (error) {
+        console.error("Error logging mood:", error);
+        alert("An error occurred while logging mood.");
+      }
+    } else {
+      alert("Please select a mood!");
     }
   };
 
