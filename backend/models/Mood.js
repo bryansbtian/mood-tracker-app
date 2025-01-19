@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-
 const MoodSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -9,7 +7,6 @@ const MoodSchema = new mongoose.Schema({
   date: {
     type: Date,
     required: true,
-    unique: true,
   },
   mood: {
     type: String,
@@ -25,5 +22,7 @@ const MoodSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+MoodSchema.index({ userId: 1, date: 1 }, { unique: true });
 
 module.exports = mongoose.model("Mood", MoodSchema);
