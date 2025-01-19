@@ -13,6 +13,7 @@ app.use(
   cors({
     origin: "https://mood-tracker-app-client.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
