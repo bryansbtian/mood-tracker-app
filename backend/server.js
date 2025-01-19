@@ -45,6 +45,10 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+app.get("/", (req, res) => {
+  res.send("Welcome to the Mood Tracker API!");
+});
+
 app.post("/register", async (req, res) => {
   const { email, password } = req.body;
   try {
