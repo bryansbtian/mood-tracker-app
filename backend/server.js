@@ -139,32 +139,15 @@ app.post("/moods", authenticateToken, async (req, res) => {
       .status(200)
       .json({ message: "Mood updated successfully!", mood: updatedMood });
   } catch (error) {
+    if (error.code === 11000) {
+      console.error("Duplicate key conflict:", error);
+      return res.status(409).json({ error: "Duplicate date entry detected." });
+    }
+
     console.error("Error updating mood:", error);
     res
       .status(500)
       .json({ error: "Error updating mood.", details: error.message });
-  }
-});
-
-app.get("/moods/month", authenticateToken, async (req, res) => {
-  const { year, month } = req.query;
-  try {
-    const startOfMonth = new Date(year, month, 1);
-    const endOfMonth = new Date(year, parseInt(month) + 1, 0, 23, 59, 59);
-
-    console.log("Start of Month:", startOfMonth);
-    console.log("End of Month:", endOfMonth);
-
-    const moods = await Mood.find({
-      userId: req.user.userId,
-      date: { $gte: startOfMonth, $lte: endOfMonth },
-    });
-
-    console.log("Fetched Moods:", moods);
-    res.status(200).json(moods);
-  } catch (error) {
-    console.error("Error fetching moods for the month:", error);
-    res.status(500).json({ error: "Error fetching moods for the month." });
   }
 });
 
