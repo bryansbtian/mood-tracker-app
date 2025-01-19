@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./MoodDataCard.css";
 import { motion } from "framer-motion";
+import { API_BASE_URL } from "../../config";
 
 const MoodDataCard = () => {
   const currentYear = new Date().getFullYear();
@@ -46,7 +47,7 @@ const MoodDataCard = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/moods/month?year=${currentYear}&month=${currentMonth}`,
+        `${API_BASE_URL}/moods/month?year=${currentYear}&month=${currentMonth}`,
         {
           method: "GET",
           headers: {
@@ -115,7 +116,7 @@ const MoodDataCard = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/moods`, {
+      const response = await fetch(`${API_BASE_URL}/moods`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -159,7 +160,7 @@ const MoodDataCard = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/moods", {
+      const response = await fetch(`${API_BASE_URL}/moods`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

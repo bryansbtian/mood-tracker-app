@@ -8,6 +8,7 @@ import {
 import { FaTired } from "react-icons/fa";
 import "./MoodLoggingCard.css";
 import { motion } from "framer-motion";
+import { API_BASE_URL } from "../../config";
 
 const MoodLoggingCard = () => {
   const [selectedMood, setSelectedMood] = useState(null);
@@ -27,7 +28,7 @@ const MoodLoggingCard = () => {
 
     if (selectedMood) {
       try {
-        const response = await fetch("http://localhost:5000/moods", {
+        const response = await fetch(`${API_BASE_URL}/moods`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
