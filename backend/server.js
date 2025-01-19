@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 
@@ -9,19 +9,9 @@ const Mood = require("./models/Mood");
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
-app.use(
-  cors({
-    origin: "https://mood-tracker-app-client.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
-
-app.options("*", cors());
-
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = "mongodb+srv://bryanseb:1234@cluster0.k7evi.mongodb.net/";
 const JWT_SECRET = "secret";
 
 mongoose
@@ -55,10 +45,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-app.get("/", (req, res) => {
-  res.send("Welcome to the Mood Tracker API!");
-});
-
 app.post("/register", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -75,46 +61,39 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  console.log("Login request received:", req.body);
-
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (!user) {
-      console.error("User not found:", email);
-      return res.status(404).json({ error: "User not found." });
-    }
+    if (!user) return res.status(404).json({ error: "User not found." });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      console.error("Invalid credentials for email:", email);
+    if (!isMatch)
       return res.status(400).json({ error: "Invalid credentials." });
-    }
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
-    console.log("Login successful. Token:", token);
-
     res.status(200).json({ token, userId: user._id });
   } catch (error) {
-    console.error("Error during login:", error);
-    res.status(500).json({ error: "Internal server error." });
+    console.error("Error logging in:", error);
+    res.status(500).json({ error: "Error logging in." });
   }
 });
 
 app.post("/moods", authenticateToken, async (req, res) => {
   const { date, mood, note } = req.body;
-  console.log("Received payload:", { date, mood, note });
-
-  if (!date || !mood) {
-    console.error("Missing required fields:", { date, mood });
-    return res.status(400).json({ error: "Date and mood are required." });
-  }
 
   try {
+    if (!date || !mood) {
+      console.error("Missing required fields:", { date, mood });
+      return res.status(400).json({ error: "Date and mood are required." });
+    }
+
     const normalizedDate = new Date(date);
     normalizedDate.setUTCHours(0, 0, 0, 0);
+
+    console.log("Normalized Date:", normalizedDate);
+    console.log("User ID from Token:", req.user.userId);
 
     const updatedMood = await Mood.findOneAndUpdate(
       { userId: req.user.userId, date: normalizedDate },
@@ -122,14 +101,20 @@ app.post("/moods", authenticateToken, async (req, res) => {
       { upsert: true, new: true }
     );
 
+    if (!updatedMood) {
+      console.error("Failed to update mood.");
+      return res
+        .status(404)
+        .json({ error: "Mood not found or could not be updated." });
+    }
+
+    console.log("Mood updated successfully:", updatedMood);
     res
       .status(200)
       .json({ message: "Mood updated successfully!", mood: updatedMood });
   } catch (error) {
-    console.error("Error updating mood:", error);
-    res
-      .status(500)
-      .json({ error: "Error updating mood.", details: error.message });
+    console.error("Error updating mood:", error.stack || error.message);
+    res.status(500).json({ error: error.message || "Error updating mood." });
   }
 });
 
@@ -274,4 +259,7 @@ app.delete("/moods", authenticateToken, async (req, res) => {
   }
 });
 
-module.exports = app;
+const PORT = 5000;
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`)
+);

@@ -6,7 +6,6 @@ import MoodLoggingCard from "./components/MoodLoggingCard";
 import MoodPredictionCard from "./components/MoodPredictionCard";
 import MoodDataCard from "./components/MoodDataCard";
 import MoodSummaryCard from "./components/MoodSummaryCard";
-import { API_BASE_URL } from "../config";
 
 const App = () => {
   const [weeklyData, setWeeklyData] = useState({});
@@ -21,7 +20,7 @@ const App = () => {
           return;
         }
 
-        const response = await fetch(`${API_BASE_URL}/moods/summary`, {
+        const response = await fetch("http://localhost:5000/moods/summary", {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -48,7 +47,7 @@ const App = () => {
           return;
         }
 
-        const response = await fetch(`${API_BASE_URL}/moods/prediction`, {
+        const response = await fetch("http://localhost:5000/moods/prediction", {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });

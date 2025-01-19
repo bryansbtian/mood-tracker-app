@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./LoginRegisterPage.css";
-import { API_BASE_URL } from "../../config";
 
 const LoginRegisterPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -34,7 +33,7 @@ const LoginRegisterPage = () => {
 
     if (isLogin) {
       try {
-        const response = await fetch(`${API_BASE_URL}/login`, {
+        const response = await fetch("http://localhost:5000/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -66,7 +65,7 @@ const LoginRegisterPage = () => {
       }
 
       try {
-        const response = await fetch(`${API_BASE_URL}/register`, {
+        const response = await fetch("http://localhost:5000/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

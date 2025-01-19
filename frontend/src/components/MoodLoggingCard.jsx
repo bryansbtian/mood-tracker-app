@@ -8,7 +8,6 @@ import {
 import { FaTired } from "react-icons/fa";
 import "./MoodLoggingCard.css";
 import { motion } from "framer-motion";
-import { API_BASE_URL } from "../../config";
 
 const MoodLoggingCard = () => {
   const [selectedMood, setSelectedMood] = useState(null);
@@ -28,7 +27,7 @@ const MoodLoggingCard = () => {
 
     if (selectedMood) {
       try {
-        const response = await fetch(`${API_BASE_URL}/moods`, {
+        const response = await fetch("http://localhost:5000/moods", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -41,16 +40,21 @@ const MoodLoggingCard = () => {
           }),
         });
 
+        const responseData = await response.json();
+
         if (response.ok) {
           alert("Mood logged successfully!");
         } else {
-          const errorData = await response.json();
-          console.error("Error details:", errorData);
-          alert(`Failed to log mood: ${errorData.error}`);
+          console.error("Response Error:", responseData);
+          alert(
+            `Failed to log mood: ${responseData.error || "Unknown error."}`
+          );
         }
       } catch (error) {
         console.error("Error logging mood:", error);
-        alert("An error occurred while logging mood.");
+        alert(
+          "An error occurred while logging mood. Check the console for details."
+        );
       }
     } else {
       alert("Please select a mood!");
