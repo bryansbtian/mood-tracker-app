@@ -18,6 +18,8 @@ app.use(
   })
 );
 
+app.options("*", cors());
+
 const MONGO_URI = process.env.MONGO_URI;
 const JWT_SECRET = "secret";
 
@@ -72,21 +74,33 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
+  console.log("Login request received:", req.body);
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ error: "User not found." });
+    console.log("User found:", user);
+
+    if (!user) {
+      console.error("User not found for email:", email);
+      return res.status(404).json({ error: "User not found." });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
+    console.log("Password match:", isMatch);
+
+    if (!isMatch) {
+      console.error("Invalid credentials for email:", email);
       return res.status(400).json({ error: "Invalid credentials." });
+    }
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
+    console.log("Generated token:", token);
+
     res.status(200).json({ token, userId: user._id });
   } catch (error) {
-    console.error("Error logging in:", error);
+    console.error("Error during login:", error);
     res.status(500).json({ error: "Error logging in." });
   }
 });
