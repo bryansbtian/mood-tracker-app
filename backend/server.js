@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 
 app.use(
   cors({
-    origin: "https://mood-tracker-app-client.vercel.app", // Client URL
+    origin: "https://mood-tracker-app-client.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -46,6 +46,8 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.options("*", cors());
 
 const MONGO_URI = process.env.MONGO_URI;
 const JWT_SECRET = "secret";
