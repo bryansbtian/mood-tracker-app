@@ -1,0 +1,70 @@
+.mood-prediction-card {
+  width: 90%;
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #f4f0ff;
+  font-family: "Arial", sans-serif;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mood-prediction-card h2 {
+  font-size: 1.2rem;
+  margin: 3px 0 8px;
+  font-weight: bold;
+}
+
+.mood-prediction-card p {
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+@media (max-width: 820px) {
+  .mood-prediction-card {
+    width: 400px;
+    margin: 20px auto;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .mood-prediction-card h2 {
+    font-size: 1rem;
+  }
+
+  .mood-prediction-card p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 425px) {
+  .mood-prediction-card {
+    width: 90%;
+    margin: 10px auto;
+    padding: 15px;
+  }
+
+  .mood-prediction-card h2 {
+    font-size: 1rem;
+  }
+
+  .mood-prediction-card p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 435px) {
+  .mood-prediction-card {
+    width: 75%;
+    margin: 5px auto;
+    padding: 8px;
+  }
+
+  .mood-prediction-card h2 {
+    font-size: 0.8rem;
+  }
+
+  .mood-prediction-card p {
+    font-size: 0.7rem;
+  }
+}
