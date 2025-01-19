@@ -122,15 +122,6 @@ app.post("/moods", authenticateToken, async (req, res) => {
     const normalizedDate = new Date(date);
     normalizedDate.setUTCHours(0, 0, 0, 0);
 
-    console.log(
-      "Updating mood for date:",
-      normalizedDate,
-      "with mood:",
-      mood,
-      "and note:",
-      note
-    );
-
     const updatedMood = await Mood.findOneAndUpdate(
       { userId: req.user.userId, date: normalizedDate },
       { mood, note, date: normalizedDate, userId: req.user.userId },
